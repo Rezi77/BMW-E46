@@ -523,8 +523,13 @@
             flex-wrap: wrap;
         }
 
-        /* 📱 Mobile Responsive Styles */
+        /* 📱 Mobile Responsive Styles & Background Animation Fix */
         @media (max-width: 768px) {
+            /* მობილურისთვის ვრთავთ რბილ ავტომატურ ზუმ/მოძრაობის ანიმაციას ფონზე */
+            .hero-bg {
+                animation: mobileHeroBgAnim 10s infinite alternate ease-in-out;
+            }
+
             header {
                 padding: 10px 15px;
             }
@@ -582,6 +587,15 @@
 
             .media-item {
                 height: 300px;
+            }
+        }
+
+        @keyframes mobileHeroBgAnim {
+            0% {
+                transform: scale(1) translateY(0);
+            }
+            100% {
+                transform: scale(1.08) translateY(-10px);
             }
         }
     </style>
