@@ -214,6 +214,43 @@
             flex-shrink: 0;
         }
 
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* 🟢 ონლაინ მთვლელის სტილი */
+        .online-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(15, 23, 42, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 8px 14px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            white-space: nowrap;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #22c55e;
+            animation: pulseDot 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseDot {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.25); opacity: 1; box-shadow: 0 0 12px #22c55e; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
         /* Private Account ღილაკი ჰედერში - გამჭვირვალე */
         .btn-contact {
             background: linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(3, 105, 161, 0.25));
@@ -533,8 +570,13 @@
                 display: none;
             }
 
+            .online-badge {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+            }
+
             .btn-contact {
-                padding: 8px 14px;
+                padding: 8px 12px;
                 font-size: 0.8rem;
             }
 
@@ -644,7 +686,14 @@
             </div>
         </div>
 
-        <a href="#contact" class="btn-contact">Private Account</a>
+        <div class="header-right">
+            <!-- ონლაინ მთვლელი ელემენტი -->
+            <div class="online-badge">
+                <span class="live-dot"></span>
+                <span>ონლაინ: <strong id="visitorCount" style="color: #38bdf8;">1</strong></span>
+            </div>
+            <a href="#contact" class="btn-contact">Private Account</a>
+        </div>
     </header>
 
     <!-- მთავარი გვერდი -->
@@ -804,7 +853,7 @@
             document.getElementById('main-page').style.display = 'none';
             document.getElementById('gallery-page').style.display = 'block';
             
-            const videos = document.querySelectorAll('#gallery-page video');
+            The videos = document.querySelectorAll('#gallery-page video');
             videos.forEach(video => {
                 video.play().catch(() => {});
             });
@@ -817,6 +866,26 @@
             document.getElementById('main-page').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        // 🟢 ონლაინ მომხმარებლების სიმულაციის ლოგიკა (მუშაობს ბრაუზერში)
+        function initVisitorCounter() {
+            const countElement = document.getElementById('visitorCount');
+            // შემთხვევითი ონლაინ რაოდენობა 3-დან 9-მდე რეალისტური იერსახისთვის
+            let currentOnline = Math.floor(Math.random() * 7) + 3;
+            countElement.textContent = currentOnline;
+
+            // პერიოდულად ოდნავ ცვალებადი რაოდენობა (ცოცხალი ეფექტისთვის)
+            setInterval(() => {
+                const change = Math.random() > 0.5 ? 1 : -1;
+                currentOnline += change;
+                if (currentOnline < 2) currentOnline = 2;
+                if (currentOnline > 15) currentOnline = 12;
+                countElement.textContent = currentOnline;
+            }, 8000);
+        }
+
+        // ჩატვირთვისთანავე გაშვება
+        document.addEventListener('DOMContentLoaded', initVisitorCounter);
     </script>
 
 </body>
