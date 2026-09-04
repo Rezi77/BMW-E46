@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BMW E46 320i (1998) - ლეგენდარული კლასიკა</title>
+    <!-- Firebase სკრიპტები -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -112,7 +115,7 @@
             box-shadow: 0 0 30px rgba(56, 189, 248, 0.8);
         }
 
-        /* 🧊 Header - მაქსიმალურად გამჭვირვალე შუშის ეფექტით */
+        /* 🧊 Header - შუშის ეფექტით */
         header {
             background: rgba(15, 23, 42, 0.25);
             backdrop-filter: blur(16px);
@@ -141,7 +144,6 @@
             cursor: pointer;
         }
 
-        /* ჰედერის BMW ლოგოს ანიმაცია და ეფექტები */
         .bmw-logo-img {
             width: 45px;
             height: 45px;
@@ -214,7 +216,6 @@
             flex-shrink: 0;
         }
 
-        /* Private Account ღილაკი ჰედერში - გამჭვირვალე */
         .btn-contact {
             background: linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(3, 105, 161, 0.25));
             backdrop-filter: blur(8px);
@@ -282,7 +283,6 @@
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
         }
 
-        /* "ნახეთ ფოტოები" ღილაკი - გამჭვირვალე */
         .btn-hero {
             background: rgba(2, 132, 199, 0.15);
             backdrop-filter: blur(12px);
@@ -369,7 +369,6 @@
             font-size: 0.85rem;
         }
 
-        /* Equipment Section */
         .equipment {
             background: rgba(15, 23, 42, 0.3);
             backdrop-filter: blur(12px);
@@ -479,7 +478,6 @@
             color: #64748b;
         }
 
-        /* სტატისტიკის დიზაინი ფუტერში */
         .site-stats {
             display: flex;
             justify-content: center;
@@ -521,7 +519,6 @@
             font-size: 0.95rem;
         }
 
-        /* ფუტერის BMW ლოგოს ანიმაცია */
         .footer-logo {
             width: 60px;
             height: 60px;
@@ -535,19 +532,9 @@
         }
 
         @keyframes footerLogoPulse {
-            0% {
-                transform: scale(1) rotate(0deg);
-                box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
-            }
-            50% {
-                transform: scale(1.12) rotate(180deg);
-                box-shadow: 0 0 30px rgba(56, 189, 248, 0.7);
-                border-color: rgba(56, 189, 248, 0.9);
-            }
-            100% {
-                transform: scale(1) rotate(360deg);
-                box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
-            }
+            0% { transform: scale(1) rotate(0deg); box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
+            50% { transform: scale(1.12) rotate(180deg); box-shadow: 0 0 30px rgba(56, 189, 248, 0.7); border-color: rgba(56, 189, 248, 0.9); }
+            100% { transform: scale(1) rotate(360deg); box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
         }
 
         footer > strong {
@@ -565,75 +552,28 @@
             flex-wrap: wrap;
         }
 
-        /* 📱 Mobile Responsive Styles */
         @media (max-width: 768px) {
-            header {
-                padding: 10px 15px;
-            }
-
-            .social-block {
-                display: none;
-            }
-
-            .btn-contact {
-                padding: 8px 14px;
-                font-size: 0.8rem;
-            }
-
-            .hero h1 {
-                font-size: 1.9rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .hero-wrapper {
-                height: 70vh;
-                min-height: 380px;
-            }
-
-            .container {
-                margin-top: -30px;
-            }
-
-            .specs-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-            }
-
-            .spec-card {
-                padding: 20px 10px;
-            }
-
-            .spec-card p.val {
-                font-size: 1.1rem;
-            }
-
-            .equipment {
-                padding: 20px;
-            }
-
-            .equipment ul {
-                grid-template-columns: 1fr;
-            }
-
-            .media-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .media-item {
-                height: 300px;
-            }
+            header { padding: 10px 15px; }
+            .social-block { display: none; }
+            .btn-contact { padding: 8px 14px; font-size: 0.8rem; }
+            .hero h1 { font-size: 1.9rem; }
+            .hero p { font-size: 1rem; }
+            .hero-wrapper { height: 70vh; min-height: 380px; }
+            .container { margin-top: -30px; }
+            .specs-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .spec-card { padding: 20px 10px; }
+            .spec-card p.val { font-size: 1.1rem; }
+            .equipment { padding: 20px; }
+            .equipment ul { grid-template-columns: 1fr; }
+            .media-grid { grid-template-columns: 1fr; }
+            .media-item { height: 300px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- აუდიო ფლეერი მუსიკებისთვის -->
     <audio id="bgMusic" preload="auto"></audio>
 
-    <!-- 1-ლი გვერდი: შესასვლელი ეკრანი -->
     <div id="welcome-page">
         <div class="welcome-card">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFPzsLonxCSVh3RcdqvCufErOdLvvvgiqspYjGZZy_hg&s=10" alt="BMW Logo" class="welcome-logo">
@@ -642,15 +582,11 @@
             
             <div class="welcome-socials">
                 <a href="https://www.instagram.com/_gaganidze_8?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw==" target="_blank" class="social-item">
-                    <svg class="social-icon" viewBox="0 0 24 24">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                    </svg>
+                    <svg class="social-icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                     _gaganidze_8
                 </a>
                 <a href="https://www.tiktok.com/@_gaganidze_8?is_from_webapp=1&sender_device=pc" target="_blank" class="social-item">
-                    <svg class="social-icon" viewBox="0 0 24 24">
-                        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.56-1.36 1.52-1.36 2.52-.02 1.03.49 2.05 1.34 2.62.89.6 2.06.67 3 .26.85-.36 1.48-1.13 1.68-2.03.11-.67.08-1.36.08-2.04V.02z"/>
-                    </svg>
+                    <svg class="social-icon" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.56-1.36 1.52-1.36 2.52-.02 1.03.49 2.05 1.34 2.62.89.6 2.06.67 3 .26.85-.36 1.48-1.13 1.68-2.03.11-.67.08-1.36.08-2.04V.02z"/></svg>
                     _gaganidze_8
                 </a>
             </div>
@@ -659,7 +595,6 @@
         </div>
     </div>
 
-    <!-- Header -->
     <header>
         <div class="header-left">
             <div class="logo-container" onclick="showMainPage()">
@@ -672,15 +607,11 @@
 
             <div class="social-block">
                 <a href="https://www.instagram.com/_gaganidze_8?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw==" target="_blank" class="social-item">
-                    <svg class="social-icon" viewBox="0 0 24 24">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                    </svg>
+                    <svg class="social-icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                     _gaganidze_8
                 </a>
                 <a href="https://www.tiktok.com/@_gaganidze_8?is_from_webapp=1&sender_device=pc" target="_blank" class="social-item">
-                    <svg class="social-icon" viewBox="0 0 24 24">
-                        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.56-1.36 1.52-1.36 2.52-.02 1.03.49 2.05 1.34 2.62.89.6 2.06.67 3 .26.85-.36 1.48-1.13 1.68-2.03.11-.67.08-1.36.08-2.04V.02z"/>
-                    </svg>
+                    <svg class="social-icon" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.56-1.36 1.52-1.36 2.52-.02 1.03.49 2.05 1.34 2.62.89.6 2.06.67 3 .26.85-.36 1.48-1.13 1.68-2.03.11-.67.08-1.36.08-2.04V.02z"/></svg>
                     _gaganidze_8
                 </a>
             </div>
@@ -689,7 +620,6 @@
         <a href="#contact" class="btn-contact">Private Account</a>
     </header>
 
-    <!-- მთავარი გვერდი -->
     <main id="main-page">
         <div class="hero-wrapper">
             <div class="hero-bg" id="heroBg"></div>
@@ -702,7 +632,6 @@
 
         <div class="container" id="specs">
             <h2 class="section-title">მახასიათებლები</h2>
-            
             <div class="specs-grid">
                 <div class="spec-card highlight">
                     <div class="spec-icon">⚙️</div>
@@ -740,46 +669,26 @@
         </div>
     </main>
 
-    <!-- ფოტოების და ვიდეოების გვერდი -->
     <section id="gallery-page">
         <button class="btn-back" onclick="showMainPage()">
             &#8592; მთავარ გვერდზე დაბრუნება
         </button>
 
         <div class="media-grid">
+            <div class="media-item"><img src="photo1.jfif" alt="BMW 1" loading="lazy"></div>
+            <div class="media-item"><img src="photo2.jfif" alt="BMW 2" loading="lazy"></div>
+            <div class="media-item"><img src="photo3.jfif" alt="BMW 3" loading="lazy"></div>
+            <div class="media-item"><img src="photo4.jfif" alt="BMW 4" loading="lazy"></div>
+            <div class="media-item"><img src="photo5.jfif" alt="BMW 5" loading="lazy"></div>
+            <div class="media-item"><img src="photo6.jfif" alt="BMW 6" loading="lazy"></div>
             <div class="media-item">
-                <img src="photo1.jfif" alt="BMW Photo 1" loading="lazy">
+                <video autoplay loop muted playsinline controlsList="nofullscreen noremoteplayback"><source src="video1.mp4" type="video/mp4"></video>
             </div>
             <div class="media-item">
-                <img src="photo2.jfif" alt="BMW Photo 2" loading="lazy">
+                <video autoplay loop muted playsinline controlsList="nofullscreen noremoteplayback"><source src="video2.mp4" type="video/mp4"></video>
             </div>
             <div class="media-item">
-                <img src="photo3.jfif" alt="BMW Photo 3" loading="lazy">
-            </div>
-            <div class="media-item">
-                <img src="photo4.jfif" alt="BMW Photo 4" loading="lazy">
-            </div>
-            <div class="media-item">
-                <img src="photo5.jfif" alt="BMW Photo 5" loading="lazy">
-            </div>
-            <div class="media-item">
-                <img src="photo6.jfif" alt="BMW Photo 6" loading="lazy">
-            </div>
-
-            <div class="media-item">
-                <video autoplay loop muted playsinline controlsList="nofullscreen noremoteplayback">
-                    <source src="video1.mp4" type="video/mp4">
-                </video>
-            </div>
-            <div class="media-item">
-                <video autoplay loop muted playsinline controlsList="nofullscreen noremoteplayback">
-                    <source src="video2.mp4" type="video/mp4">
-                </video>
-            </div>
-            <div class="media-item">
-                <video autoplay loop muted playsinline controlsList="nofullscreen noremoteplayback">
-                    <source src="video3.mp4" type="video/mp4">
-                </video>
+                <video autoplay loop muted playsinline controlsList="nofullscreen noremoteplayback"><source src="video3.mp4" type="video/mp4"></video>
             </div>
         </div>
     </section>
@@ -788,7 +697,6 @@
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFPzsLonxCSVh3RcdqvCufErOdLvvvgiqspYjGZZy_hg&s=10" alt="BMW Logo" class="footer-logo">
         <strong>Private Account</strong>
         
-        <!-- 📊 ონლაინ და საერთო ნახვების ვიჯეტი -->
         <div class="site-stats">
             <div class="stat-badge">
                 <span class="online-dot"></span>
@@ -801,15 +709,11 @@
 
         <div class="footer-social-block">
             <a href="https://www.instagram.com/_gaganidze_8?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw==" target="_blank" class="social-item">
-                <svg class="social-icon" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
+                <svg class="social-icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                 _gaganidze_8
             </a>
             <a href="https://www.tiktok.com/@_gaganidze_8?is_from_webapp=1&sender_device=pc" target="_blank" class="social-item">
-                <svg class="social-icon" viewBox="0 0 24 24">
-                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.56-1.36 1.52-1.36 2.52-.02 1.03.49 2.05 1.34 2.62.89.6 2.06.67 3 .26.85-.36 1.48-1.13 1.68-2.03.11-.67.08-1.36.08-2.04V.02z"/>
-                </svg>
+                <svg class="social-icon" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.56-1.36 1.52-1.36 2.52-.02 1.03.49 2.05 1.34 2.62.89.6 2.06.67 3 .26.85-.36 1.48-1.13 1.68-2.03.11-.67.08-1.36.08-2.04V.02z"/></svg>
                 _gaganidze_8
             </a>
         </div>
@@ -817,6 +721,21 @@
     </footer>
 
     <script>
+        // --- 1. FIREBASE CONFIGURATION (ჩასვი შენი მონაცემები აქ) ---
+        const firebaseConfig = {
+  apiKey: "AIzaSyA_DeWuV0BycHyDTO0DknmbBKmYOX5Yo5k",
+  authDomain: "bmw-e46-d4775.firebaseapp.com",
+  projectId: "bmw-e46-d4775",
+  storageBucket: "bmw-e46-d4775.firebasestorage.app",
+  messagingSenderId: "963898555774",
+  appId: "1:963898555774:web:df0542fc6a55f8d878872f"
+};
+
+        // Firebase-ის ინიციალიზაცია
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // --- 2. მუსიკისა და გვერდების ლოგიკა ---
         const playlist = ['music1.mp3', 'music2.mp3'];
         let currentTrack = 0;
         const audioPlayer = document.getElementById('bgMusic');
@@ -833,20 +752,15 @@
 
         function enterSite() {
             playPlaylist();
-
             const welcomePage = document.getElementById('welcome-page');
             welcomePage.style.transition = 'opacity 0.5s ease';
             welcomePage.style.opacity = '0';
-            setTimeout(() => {
-                welcomePage.style.display = 'none';
-            }, 500);
+            setTimeout(() => { welcomePage.style.display = 'none'; }, 500);
         }
 
-        // სქროლის ანიმაცია
         window.addEventListener('scroll', function() {
             const scrolled = window.pageYOffset;
             const heroBg = document.getElementById('heroBg');
-            
             if (heroBg && scrolled < window.innerHeight) {
                 const scaleValue = 1 + (scrolled * 0.0008); 
                 const moveValue = scrolled * 0.2;
@@ -857,12 +771,7 @@
         function showGalleryPage() {
             document.getElementById('main-page').style.display = 'none';
             document.getElementById('gallery-page').style.display = 'block';
-            
-            const videos = document.querySelectorAll('#gallery-page video');
-            videos.forEach(video => {
-                video.play().catch(() => {});
-            });
-
+            document.querySelectorAll('#gallery-page video').forEach(v => v.play().catch(() => {}));
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -872,54 +781,38 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 📊 საიტის ვიზიტორებისა და ონლაინ მთვლელის ლოგიკა
-        function initSiteStats() {
-            // სულ ნახვების აღრიცხვა
-            let totalViews = localStorage.getItem('e46_total_views');
-            if (!totalViews) {
-                totalViews = 1250; // საწყისი რიცხვი რეალისტური იერსახისთვის
-            }
-            
-            // ითვლის მხოლოდ ახალ სესიას თითო მომხმარებელზე
+        // --- 3. გლობალური ონლაინ და ნახვების რეალური აღრიცხვა ---
+        function initGlobalStats() {
+            // საერთო ნახვების მართვა
+            const viewsRef = db.ref('stats/totalViews');
             if (!sessionStorage.getItem('counted_view')) {
-                totalViews = parseInt(totalViews) + 1;
-                localStorage.setItem('e46_total_views', totalViews);
+                viewsRef.transaction(current => (current || 1250) + 1);
                 sessionStorage.setItem('counted_view', 'true');
             }
-            document.getElementById('totalViews').textContent = totalViews;
+            viewsRef.on('value', snapshot => {
+                document.getElementById('totalViews').textContent = snapshot.val() || 1250;
+            });
 
-            // ონლაინ მყოფთა სიმულაცია / აქტიური სესიების თვალყურის დევნება
-            const sessionId = 'user_' + Math.random().toString(36).substring(2, 9);
+            // რეალური ონლაინ მომხმარებლების მართვა (Firebase Presence სისტემით)
+            const onlineRef = db.ref('stats/onlineUsers');
+            const myConnectionRef = onlineRef.push();
             
-            function updateOnlineStatus() {
-                let activeUsers = JSON.parse(localStorage.getItem('e46_active_users')) || [];
-                const now = Date.now();
-                
-                // ვტოვებთ მხოლოდ იმ მომხმარებლებს, ვინც ბოლო 30 წამის განმავლობაში იყო აქტიური
-                activeUsers = activeUsers.filter(user => (now - user.time) < 30000);
-                
-                // ვამოწმებთ არის თუ არა მიმდინარე მომხმარებელი სიაში
-                const userIndex = activeUsers.findIndex(u => u.id === sessionId);
-                if (userIndex >= 0) {
-                    activeUsers[userIndex].time = now;
-                } else {
-                    activeUsers.push({ id: sessionId, time: now });
+            db.ref('.info/connected').on('value', snapshot => {
+                if (snapshot.val() === true) {
+                    // როცა კავშირი წყდება (მომხმარებელი ხურავს ფანჯრას), ავტომატურად იშლება სიიდან
+                    myConnectionRef.onDisconnect().remove();
+                    myConnectionRef.set(true);
                 }
-                
-                localStorage.setItem('e46_active_users', JSON.stringify(activeUsers));
-                
-                // მინიმუმ 1 მომხმარებელი (თვითონ შენ) ყოველთვის უნდა აჩვენოს
-                const onlineCount = Math.max(1, activeUsers.length);
-                document.getElementById('onlineCount').textContent = onlineCount;
-            }
+            });
 
-            updateOnlineStatus();
-            // განახლება ყოველ 10 წამში
-            setInterval(updateOnlineStatus, 10000);
+            // ონლაინ რაოდენობის ცვლილების მოსმენა
+            onlineRef.on('value', snapshot => {
+                const count = snapshot.numChildren();
+                document.getElementById('onlineCount').textContent = Math.max(1, count);
+            });
         }
 
-        window.addEventListener('DOMContentLoaded', initSiteStats);
+        window.addEventListener('DOMContentLoaded', initGlobalStats);
     </script>
-
 </body>
 </html>
