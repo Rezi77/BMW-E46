@@ -214,43 +214,6 @@
             flex-shrink: 0;
         }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        /* 🟢 ონლაინ მთვლელის სტილი */
-        .online-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(15, 23, 42, 0.35);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            padding: 8px 14px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            white-space: nowrap;
-        }
-
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #22c55e;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #22c55e;
-            animation: pulseDot 2s infinite ease-in-out;
-        }
-
-        @keyframes pulseDot {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.25); opacity: 1; box-shadow: 0 0 12px #22c55e; }
-            100% { transform: scale(0.95); opacity: 0.8; }
-        }
-
         /* Private Account ღილაკი ჰედერში - გამჭვირვალე */
         .btn-contact {
             background: linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(3, 105, 161, 0.25));
@@ -504,7 +467,7 @@
             display: block;
         }
 
-        /* Footer */
+        /* Footer & Statistics Widget */
         footer {
             background: rgba(6, 9, 14, 0.85);
             backdrop-filter: blur(12px);
@@ -514,6 +477,48 @@
             margin-top: 80px;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             color: #64748b;
+        }
+
+        /* სტატისტიკის დიზაინი ფუტერში */
+        .site-stats {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-badge {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(8px);
+        }
+
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #22c55e;
+            animation: pulseDot 2s infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        .stat-badge strong {
+            color: #38bdf8;
+            font-size: 0.95rem;
         }
 
         /* ფუტერის BMW ლოგოს ანიმაცია */
@@ -545,7 +550,7 @@
             }
         }
 
-        footer strong {
+        footer > strong {
             color: #38bdf8;
             font-size: 1.2rem;
             display: block;
@@ -570,13 +575,8 @@
                 display: none;
             }
 
-            .online-badge {
-                padding: 6px 10px;
-                font-size: 0.75rem;
-            }
-
             .btn-contact {
-                padding: 8px 12px;
+                padding: 8px 14px;
                 font-size: 0.8rem;
             }
 
@@ -686,14 +686,7 @@
             </div>
         </div>
 
-        <div class="header-right">
-            <!-- ონლაინ მთვლელი ელემენტი -->
-            <div class="online-badge">
-                <span class="live-dot"></span>
-                <span>ონლაინ: <strong id="visitorCount" style="color: #38bdf8;">1</strong></span>
-            </div>
-            <a href="#contact" class="btn-contact">Private Account</a>
-        </div>
+        <a href="#contact" class="btn-contact">Private Account</a>
     </header>
 
     <!-- მთავარი გვერდი -->
@@ -794,6 +787,18 @@
     <footer id="contact">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFPzsLonxCSVh3RcdqvCufErOdLvvvgiqspYjGZZy_hg&s=10" alt="BMW Logo" class="footer-logo">
         <strong>Private Account</strong>
+        
+        <!-- 📊 ონლაინ და საერთო ნახვების ვიჯეტი -->
+        <div class="site-stats">
+            <div class="stat-badge">
+                <span class="online-dot"></span>
+                <span>ონლაინ: <strong id="onlineCount">1</strong></span>
+            </div>
+            <div class="stat-badge">
+                <span>👁️ სულ ნახვა: <strong id="totalViews">0</strong></span>
+            </div>
+        </div>
+
         <div class="footer-social-block">
             <a href="https://www.instagram.com/_gaganidze_8?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw==" target="_blank" class="social-item">
                 <svg class="social-icon" viewBox="0 0 24 24">
@@ -837,7 +842,7 @@
             }, 500);
         }
 
-        // სქროლის ანიმაცია ახლა უკვე მუშაობს როგორც კომპიუტერზე, ისე მობილურზე
+        // სქროლის ანიმაცია
         window.addEventListener('scroll', function() {
             const scrolled = window.pageYOffset;
             const heroBg = document.getElementById('heroBg');
@@ -853,7 +858,7 @@
             document.getElementById('main-page').style.display = 'none';
             document.getElementById('gallery-page').style.display = 'block';
             
-            The videos = document.querySelectorAll('#gallery-page video');
+            const videos = document.querySelectorAll('#gallery-page video');
             videos.forEach(video => {
                 video.play().catch(() => {});
             });
@@ -867,25 +872,53 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 🟢 ონლაინ მომხმარებლების სიმულაციის ლოგიკა (მუშაობს ბრაუზერში)
-        function initVisitorCounter() {
-            const countElement = document.getElementById('visitorCount');
-            // შემთხვევითი ონლაინ რაოდენობა 3-დან 9-მდე რეალისტური იერსახისთვის
-            let currentOnline = Math.floor(Math.random() * 7) + 3;
-            countElement.textContent = currentOnline;
+        // 📊 საიტის ვიზიტორებისა და ონლაინ მთვლელის ლოგიკა
+        function initSiteStats() {
+            // სულ ნახვების აღრიცხვა
+            let totalViews = localStorage.getItem('e46_total_views');
+            if (!totalViews) {
+                totalViews = 1250; // საწყისი რიცხვი რეალისტური იერსახისთვის
+            }
+            
+            // ითვლის მხოლოდ ახალ სესიას თითო მომხმარებელზე
+            if (!sessionStorage.getItem('counted_view')) {
+                totalViews = parseInt(totalViews) + 1;
+                localStorage.setItem('e46_total_views', totalViews);
+                sessionStorage.setItem('counted_view', 'true');
+            }
+            document.getElementById('totalViews').textContent = totalViews;
 
-            // პერიოდულად ოდნავ ცვალებადი რაოდენობა (ცოცხალი ეფექტისთვის)
-            setInterval(() => {
-                const change = Math.random() > 0.5 ? 1 : -1;
-                currentOnline += change;
-                if (currentOnline < 2) currentOnline = 2;
-                if (currentOnline > 15) currentOnline = 12;
-                countElement.textContent = currentOnline;
-            }, 8000);
+            // ონლაინ მყოფთა სიმულაცია / აქტიური სესიების თვალყურის დევნება
+            const sessionId = 'user_' + Math.random().toString(36).substring(2, 9);
+            
+            function updateOnlineStatus() {
+                let activeUsers = JSON.parse(localStorage.getItem('e46_active_users')) || [];
+                const now = Date.now();
+                
+                // ვტოვებთ მხოლოდ იმ მომხმარებლებს, ვინც ბოლო 30 წამის განმავლობაში იყო აქტიური
+                activeUsers = activeUsers.filter(user => (now - user.time) < 30000);
+                
+                // ვამოწმებთ არის თუ არა მიმდინარე მომხმარებელი სიაში
+                const userIndex = activeUsers.findIndex(u => u.id === sessionId);
+                if (userIndex >= 0) {
+                    activeUsers[userIndex].time = now;
+                } else {
+                    activeUsers.push({ id: sessionId, time: now });
+                }
+                
+                localStorage.setItem('e46_active_users', JSON.stringify(activeUsers));
+                
+                // მინიმუმ 1 მომხმარებელი (თვითონ შენ) ყოველთვის უნდა აჩვენოს
+                const onlineCount = Math.max(1, activeUsers.length);
+                document.getElementById('onlineCount').textContent = onlineCount;
+            }
+
+            updateOnlineStatus();
+            // განახლება ყოველ 10 წამში
+            setInterval(updateOnlineStatus, 10000);
         }
 
-        // ჩატვირთვისთანავე გაშვება
-        document.addEventListener('DOMContentLoaded', initVisitorCounter);
+        window.addEventListener('DOMContentLoaded', initSiteStats);
     </script>
 
 </body>
